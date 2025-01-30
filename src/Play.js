@@ -9,6 +9,9 @@ class Play extends Phaser.Scene {
         this.SHOT_VELOCITY_Y_MIN = 700
         this.SHOT_VELOCITY_Y_MAX = 1100
 
+        this.totalShots = 0
+        this.successfulShots = 0
+
     }
 
     preload() {
@@ -68,6 +71,7 @@ class Play extends Phaser.Scene {
 
         // add pointer input
         this.input.on('pointerdown', (pointer) => {
+            this.totalShots++;
             let shotDirectionX = pointer.x < this.ball.x ? 1 : -1
             let shotDirectionY = pointer.y < this.ball.y ? 1 : -1
 
@@ -75,14 +79,21 @@ class Play extends Phaser.Scene {
                 this.SHOT_VELOCITY_X) * shotDirectionX)
             this.ball.body.setVelocityY(Phaser.Math.Between(this.SHOT_VELOCITY_Y_MIN,
                 this.SHOT_VELOCITY_Y_MAX ) * shotDirectionY)
+
+            this.shotCounterText.setText('Shots: ' + this.totalShots)
         })
 
         // cup/ball collision
 
         this.physics.add.collider(this.ball, this.cup, (ball, cup) =>{
+            this.successfulShots++
             ball.setPosition(width / 2, height - height/ 10)
             ball.setVelocity(0,0)
-            //ball.c
+            
+            this.successfulCounterText.setText('Success: ' + this.successfulShots)
+
+            let accuracy = ((this.successfulShots / this.totalShots) * 100)
+            this.successRateText.setText('Accuracy: ' + accuracy + '%')
         })
 
         // ball/wall collision
@@ -92,6 +103,19 @@ class Play extends Phaser.Scene {
         // ball/one-way collision
         this.physics.add.collider(this.ball, this.oneWay)
 
+
+        this.shotCounterText = this.add.text(20, 20, 'Shots: 0',{
+            fontSize: '24px', 
+            fill: '#FFF'
+        })
+        this.successfulCounterText = this.add.text(20, 50, 'Success: 0',{
+            fontSize: '24px', 
+            fill: '#FFF'
+        })
+        this.successRateText = this.add.text(20, 80, 'Accuracy: 0%',{
+            fontSize: '24px', 
+            fill: '#FFF'
+        })
     }
 
     update() {
@@ -104,5 +128,5 @@ Try to implement at least 3/4 of the following features during the remainder of 
 [ ] Add ball reset logic on successful shot, done
 [ ] Improve shot logic by making pointer’s relative x-position shoot the ball in correct x-direction, done
 [ ] Make one obstacle move left/right and bounce against screen edges, done
-[ ] Create and display shot counter, score, and successful shot percentage
+[ ] Create and display shot counter, score, and successful shot percentage, done
 */
