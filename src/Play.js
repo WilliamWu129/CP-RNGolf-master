@@ -13,7 +13,7 @@ class Play extends Phaser.Scene {
         this.successfulShots = 0
 
     }
-
+ 
     preload() {
         this.load.path = './assets/img/'
         this.load.image('grass', 'grass.jpg')
